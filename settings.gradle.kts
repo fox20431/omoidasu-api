@@ -1,0 +1,2 @@
+rootProject.name = "omoidasu-api"
+
