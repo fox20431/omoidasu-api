@@ -9,11 +9,18 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @ToString
 @Entity
 @Table(name = "jmdict_entries")
-
 public class JMDictEntry {
+
+    public JMDictEntry(Long sequence, List<JMDictKanjiElement> kanjiElements, List<JMDictKanaElement> kanaList) {
+        this.sequence = sequence;
+        this.kanjiElements = kanjiElements;
+        this.kanaElements = kanaList;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,10 +29,10 @@ public class JMDictEntry {
     private Long sequence;
 
     @OneToMany(mappedBy = "entry", cascade = CascadeType.PERSIST)
-    private List<JMDictKanji> kanjiList;
+    private List<JMDictKanjiElement> kanjiElements;
 
     @OneToMany(mappedBy = "entry", cascade = CascadeType.PERSIST)
-    private List<JMDictKana> kanaList;
+    private List<JMDictKanaElement> kanaElements;
 
     @OneToMany(mappedBy = "entry", cascade = CascadeType.PERSIST)
     private List<JMDictSense> senses;

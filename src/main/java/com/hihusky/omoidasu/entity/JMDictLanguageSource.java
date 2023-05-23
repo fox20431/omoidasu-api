@@ -9,7 +9,7 @@ import lombok.*;
 @Setter
 @ToString(exclude = "sense")
 @Entity
-@Table(name = "jmdict_language_source")
+@Table(name = "jmdict_language_source_list")
 public class JMDictLanguageSource {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
