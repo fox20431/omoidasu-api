@@ -33,30 +33,9 @@ jobs:
           chmod +x gradlew
           ./gradlew test
           ./gradlew bootJar
-#      actions/setup-java can cache them.
-#      - name: Cache Project Dependencies
-#        uses: actions/cache@v3
-#        with:
-#          path: |
-#            ~/.gradle/wrapper
-#            ~/.gradle/caches
-#            ~/.m2/repository
-#          key: ${{ runner.os }}-deps-${{ hashFiles('dictionary') }}
-#          restore-keys: |
-#            ${{ runner.os }}-deps-
       - name: Set version environment variable
         run: |
           echo "VERSION=$(ls build/libs/ | grep -v 'plain' | sed 's/^.\{13\}\(.*\).\{4\}$/\1/')" >> $GITHUB_ENV
-#      - name: Build the Docker image
-#        run: docker build --build-arg VERSION=${{ env.VERSION }} --file Dockerfile --tag fox20431/omoidasu-api:${{ env.VERSION }} .
-#      - name: Cache Docker layers
-#        uses: actions/cache@v3
-#        with:
-#          path: |
-#            ~/.docker
-#          key: ${{ runner.os }}-docker-${{ hashFiles('**/Dockerfile') }}
-#          restore-keys: |
-#            ${{ runner.os }}-docker-
       - name: Configure SSH
         run: |
           mkdir -p ~/.ssh/
@@ -64,33 +43,11 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
           ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
-#          echo "StrictHostKeyChecking no" > ~/.ssh/config
       - name: Create workspace on remote server
         run: |
           ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "\
             mkdir -p ~/omoidasu-api"
 
-#      - name: Push Docker image
-#        run: |
-#          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-#          docker push fox20431/omoidasu-api:${{ env.VERSION }}
-#      - name: Pull Docker image
-#        run: |
-#          ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "\
-#            docker pull fox20431/omoidasu-api:${{ env.VERSION }} \
-          "
-#      It's not recommended because docker has a layer concept. Using the layer feature can save network traffic.
-#      - name: Save Docker image as tar file
-#        run: |
-#          docker save fox20431/omoidasu-api:${{ env.VERSION }} > omoidasu-api-${{ env.VERSION }}-docker-image.tar
-#      - name: Copy tar file to remote server
-#        run: |
-#          scp -rp omoidasu-api-${{ env.VERSION }}-docker-image.tar ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:~/omoidasu-api/omoidasu-api-${{ env.VERSION }}-docker-image.tar
-#      - name: Load Docker image from tar file
-#        run: |
-#          ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "\
-#            docker load -i ~/omoidasu-api/omoidasu-api-${{ env.VERSION }}-docker-image.tar \
-#          "
       - name: Copy the docker compose to remote server
         run: |
           scp -rp docker-compose.yaml ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:~/omoidasu-api/docker-compose.yaml
