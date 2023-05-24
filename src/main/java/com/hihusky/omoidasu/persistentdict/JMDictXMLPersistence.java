@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -156,19 +155,19 @@ public class JMDictXMLPersistence {
             switch (currentElement) {
                 case "entry":
                     entry = new JMDictEntry();
-                    entry.setKanjiList(new ArrayList<>());
-                    entry.setKanaList(new ArrayList<>());
+                    entry.setKanjiElements(new ArrayList<>());
+                    entry.setKanaElements(new ArrayList<>());
                     entry.setSenses(new ArrayList<>());
                     break;
                 case "k_ele":
-                    JMDictKanji kanji = new JMDictKanji();
+                    JMDictKanjiElement kanji = new JMDictKanjiElement();
                     kanji.setEntry(entry);
-                    entry.getKanjiList().add(kanji);
+                    entry.getKanjiElements().add(kanji);
                     break;
                 case "r_ele":
-                    JMDictKana kana = new JMDictKana();
+                    JMDictKanaElement kana = new JMDictKanaElement();
                     kana.setEntry(entry);
-                    entry.getKanaList().add(kana);
+                    entry.getKanaElements().add(kana);
                     break;
                 case "sense":
                     JMDictSense sense = new JMDictSense();
@@ -191,40 +190,40 @@ public class JMDictXMLPersistence {
                         break;
                     // kanji field
                     case "keb":
-                        entry.getKanjiList().get(entry.getKanjiList().size() - 1).setKanji(value);
+                        entry.getKanjiElements().get(entry.getKanjiElements().size() - 1).setKanji(value);
                         break;
                     case "ke_inf":
-                        JMDictKanji jmDictKanji = entry.getKanjiList().get(entry.getKanjiList().size() - 1);
-                        jmDictKanji.setInformationList(new ArrayList<>());
-                        jmDictKanji.getInformationList().add(value);
-                        entry.getKanjiList().get(entry.getKanjiList().size() - 1).getInformationList().add(value);
+                        JMDictKanjiElement jmDictKanjiElement = entry.getKanjiElements().get(entry.getKanjiElements().size() - 1);
+                        jmDictKanjiElement.setInformationList(new ArrayList<>());
+                        jmDictKanjiElement.getInformationList().add(value);
+                        entry.getKanjiElements().get(entry.getKanjiElements().size() - 1).getInformationList().add(value);
                         break;
                     case "ke_pri":
-                        entry.getKanjiList().get(entry.getKanjiList().size() - 1).setPriorities(new ArrayList<>());
-                        entry.getKanjiList().get(entry.getKanjiList().size() - 1).getPriorities().add(value);
+                        entry.getKanjiElements().get(entry.getKanjiElements().size() - 1).setPriorities(new ArrayList<>());
+                        entry.getKanjiElements().get(entry.getKanjiElements().size() - 1).getPriorities().add(value);
                         break;
                     // kana field
                     case "reb":
-                        entry.getKanaList().get(entry.getKanaList().size() - 1).setKana(value);
+                        entry.getKanaElements().get(entry.getKanaElements().size() - 1).setKana(value);
                         break;
                     case "re_nokanji":
                         if ("".equals(value)) {
-                            entry.getKanaList().get(entry.getKanaList().size() - 1).setNoKanji(false);
+                            entry.getKanaElements().get(entry.getKanaElements().size() - 1).setNoKanji(false);
                         } else {
-                            entry.getKanaList().get(entry.getKanaList().size() - 1).setNoKanji(true);
+                            entry.getKanaElements().get(entry.getKanaElements().size() - 1).setNoKanji(true);
                         }
                         break;
                     case "re_restr":
-                        entry.getKanaList().get(entry.getKanaList().size() - 1).setRestrictions(new ArrayList<>());
-                        entry.getKanaList().get(entry.getKanaList().size() - 1).getRestrictions().add(value);
+                        entry.getKanaElements().get(entry.getKanaElements().size() - 1).setRestrictions(new ArrayList<>());
+                        entry.getKanaElements().get(entry.getKanaElements().size() - 1).getRestrictions().add(value);
                         break;
                     case "re_inf":
-                        entry.getKanaList().get(entry.getKanaList().size() - 1).setInformationList(new ArrayList<>());
-                        entry.getKanaList().get(entry.getKanaList().size() - 1).getInformationList().add(value);
+                        entry.getKanaElements().get(entry.getKanaElements().size() - 1).setInformationList(new ArrayList<>());
+                        entry.getKanaElements().get(entry.getKanaElements().size() - 1).getInformationList().add(value);
                         break;
                     case "re_pri":
-                        entry.getKanaList().get(entry.getKanaList().size() - 1).setPriorities(new ArrayList<>());
-                        entry.getKanaList().get(entry.getKanaList().size() - 1).getPriorities().add(value);
+                        entry.getKanaElements().get(entry.getKanaElements().size() - 1).setPriorities(new ArrayList<>());
+                        entry.getKanaElements().get(entry.getKanaElements().size() - 1).getPriorities().add(value);
                         break;
                     // sense field
                     case "stagk":

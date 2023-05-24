@@ -19,7 +19,7 @@ services:
     networks:
       - app-network
   app:
-    image: fox20431/omoidasu-api:1
+    image: fox20431/omoidasu-api:${VERSION}
     restart: no
     depends_on:
       - db
