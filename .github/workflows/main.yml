@@ -46,9 +46,10 @@ jobs:
       - name: Create workspace on remote server
         run: |
           ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "\
-            mkdir -p ~/omoidasu-api"
-
-      - name: Copy the docker compose to remote server
+            mkdir -p ~/omoidasu-api; \
+            mkdir -p ~/omoidasu-api/build/libs \
+          "
+      - name: Copy the docker compose related files to remote server
         run: |
           scp -rp docker-compose.yaml ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:~/omoidasu-api/docker-compose.yaml
           scp -rp Dockerfile ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:~/omoidasu-api/Dockerfile
