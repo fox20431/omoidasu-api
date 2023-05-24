@@ -67,17 +67,27 @@ jobs:
         run: |
           ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "\
             mkdir -p ~/omoidasu-api"
-      - name: Save Docker image as tar file
+
+      - name: Push Docker image
         run: |
-          docker save fox20431/omoidasu-api:${{ env.VERSION }} > omoidasu-api-${{ env.VERSION }}-docker-image.tar
-      - name: Copy tar file to remote server
-        run: |
-          scp -rp omoidasu-api-${{ env.VERSION }}-docker-image.tar ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:~/omoidasu-api/omoidasu-api-${{ env.VERSION }}-docker-image.tar
-      - name: Load Docker image from tar file
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker push fox20431/omoidasu-api:${{ env.VERSION }}
+      - name: Pull Docker image
         run: |
           ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "\
-            docker load -i ~/omoidasu-api/omoidasu-api-${{ env.VERSION }}-docker-image.tar \
+            docker pull fox20431/omoidasu-api:${{ env.VERSION }} \
           "
+#      - name: Save Docker image as tar file
+#        run: |
+#          docker save fox20431/omoidasu-api:${{ env.VERSION }} > omoidasu-api-${{ env.VERSION }}-docker-image.tar
+#      - name: Copy tar file to remote server
+#        run: |
+#          scp -rp omoidasu-api-${{ env.VERSION }}-docker-image.tar ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:~/omoidasu-api/omoidasu-api-${{ env.VERSION }}-docker-image.tar
+#      - name: Load Docker image from tar file
+#        run: |
+#          ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "\
+#            docker load -i ~/omoidasu-api/omoidasu-api-${{ env.VERSION }}-docker-image.tar \
+#          "
       - name: Copy the docker file to remote server
         run: |
           scp -rp docker-compose.yaml ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:~/omoidasu-api/docker-compose.yaml
@@ -86,6 +96,6 @@ jobs:
           export DB_USERNAME=${{ secrets.DB_USERNAME }}
           export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
           export VERSION=${{ env.VERSION }}
-          ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "\
+          ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "\
             cd ~/omoidasu-api; \
             docker-compose up -d"
