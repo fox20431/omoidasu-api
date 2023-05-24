@@ -27,21 +27,23 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: gradle
       - name: Build and Generate the Boot Jar
         run: |
           chmod +x gradlew
           ./gradlew test
           ./gradlew bootJar
-      - name: Cache Project Dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/wrapper
-            ~/.gradle/caches
-            ~/.m2/repository
-          key: ${{ runner.os }}-deps-${{ hashFiles('dictionary') }}
-          restore-keys: |
-            ${{ runner.os }}-deps-
+#      actions/setup-java can cache them.
+#      - name: Cache Project Dependencies
+#        uses: actions/cache@v3
+#        with:
+#          path: |
+#            ~/.gradle/wrapper
+#            ~/.gradle/caches
+#            ~/.m2/repository
+#          key: ${{ runner.os }}-deps-${{ hashFiles('dictionary') }}
+#          restore-keys: |
+#            ${{ runner.os }}-deps-
       - name: Set version environment variable
         run: |
           echo "VERSION=$(ls build/libs/ | grep -v 'plain' | sed 's/^.\{13\}\(.*\).\{4\}$/\1/')" >> $GITHUB_ENV
