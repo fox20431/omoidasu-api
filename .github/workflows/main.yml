@@ -36,6 +36,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
+            ~/.gradle/wrapper
             ~/.gradle/caches
             ~/.m2/repository
           key: ${{ runner.os }}-deps-${{ hashFiles('dictionary') }}
@@ -54,11 +55,6 @@ jobs:
           key: ${{ runner.os }}-docker-${{ hashFiles('**/Dockerfile') }}
           restore-keys: |
             ${{ runner.os }}-docker-
-
-  deploy:
-    needs: [build]
-    runs-on: ubuntu-latest
-    steps:
       - name: Configure SSH
         run: |
           mkdir -p ~/.ssh/
