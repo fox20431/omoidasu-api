@@ -45,7 +45,7 @@ jobs:
         run: |
           echo "VERSION=$(ls build/libs/ | grep -v 'plain' | sed 's/^.\{13\}\(.*\).\{4\}$/\1/')" >> $GITHUB_ENV
       - name: Build the Docker image
-        run: docker build --build-arg VERSION=${{ env.VERSION }} --file docker/Dockerfile --tag fox20431/omoidasu-api:${{ env.VERSION }} .
+        run: docker build --build-arg VERSION=${{ env.VERSION }} --file Dockerfile --tag fox20431/omoidasu-api:${{ env.VERSION }} .
       - name: Cache Docker layers
         uses: actions/cache@v3
         with:

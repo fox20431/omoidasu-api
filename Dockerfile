@@ -6,7 +6,7 @@ WORKDIR /app
 ARG VERSION
 
 # Copy current all under directory into 'app' directory
-COPY ../build/libs/omoidasu-api-$VERSION.jar /app/
+COPY ./build/libs/omoidasu-api-$VERSION.jar /app/
 
 EXPOSE 8080
 
