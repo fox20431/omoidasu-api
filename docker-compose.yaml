@@ -20,7 +20,6 @@ services:
       - app-network
   app:
     image: fox20431/omoidasu-api:${VERSION}
-    restart: no
     depends_on:
       - db
     ports:
