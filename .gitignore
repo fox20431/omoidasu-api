@@ -48,5 +48,9 @@ temp/
 # Build Tools
 .gradle/
 
+
+# Custom
 src/main/resources/dicts
 JMdict
+docker/.env
+

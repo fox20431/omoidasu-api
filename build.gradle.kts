@@ -53,3 +53,10 @@ dependencies {
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
+
+// tasks.register("printVersion") {
+//     doLast {
+//         val version: String by project
+//         println("$version")
+//     }
+// }
