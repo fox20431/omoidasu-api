@@ -4,10 +4,11 @@ FROM openjdk:17
 WORKDIR /app
 
 ARG VERSION
+ENV VERSION=$VERSION
 
 # Copy current all under directory into 'app' directory
-COPY ./build/libs/omoidasu-api-$VERSION.jar /app/
+COPY build/libs/omoidasu-api-$VERSION.jar /app/
 
 EXPOSE 8080
 
-CMD ["java", "-Dspring.datasource.url=jdbc:postgresql://db:5432/omoidasu", "-Djdk.xml.entityExpansionLimit=0", "-jar", "/app/omoidasu-api-$VERSION.jar"]
+CMD ["java", "-Dspring.datasource.url=jdbc:postgresql://db:5432/omoidasu", "-Djdk.xml.entityExpansionLimit=0", "-jar", "/app/omoidasu-api-${echo $VERSION}.jar"]

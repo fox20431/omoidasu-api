@@ -47,16 +47,16 @@ jobs:
       - name: Set version environment variable
         run: |
           echo "VERSION=$(ls build/libs/ | grep -v 'plain' | sed 's/^.\{13\}\(.*\).\{4\}$/\1/')" >> $GITHUB_ENV
-      - name: Build the Docker image
-        run: docker build --build-arg VERSION=${{ env.VERSION }} --file Dockerfile --tag fox20431/omoidasu-api:${{ env.VERSION }} .
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.docker
-          key: ${{ runner.os }}-docker-${{ hashFiles('**/Dockerfile') }}
-          restore-keys: |
-            ${{ runner.os }}-docker-
+#      - name: Build the Docker image
+#        run: docker build --build-arg VERSION=${{ env.VERSION }} --file Dockerfile --tag fox20431/omoidasu-api:${{ env.VERSION }} .
+#      - name: Cache Docker layers
+#        uses: actions/cache@v3
+#        with:
+#          path: |
+#            ~/.docker
+#          key: ${{ runner.os }}-docker-${{ hashFiles('**/Dockerfile') }}
+#          restore-keys: |
+#            ${{ runner.os }}-docker-
       - name: Configure SSH
         run: |
           mkdir -p ~/.ssh/
@@ -70,14 +70,14 @@ jobs:
           ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "\
             mkdir -p ~/omoidasu-api"
 
-      - name: Push Docker image
-        run: |
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker push fox20431/omoidasu-api:${{ env.VERSION }}
-      - name: Pull Docker image
-        run: |
-          ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "\
-            docker pull fox20431/omoidasu-api:${{ env.VERSION }} \
+#      - name: Push Docker image
+#        run: |
+#          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+#          docker push fox20431/omoidasu-api:${{ env.VERSION }}
+#      - name: Pull Docker image
+#        run: |
+#          ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "\
+#            docker pull fox20431/omoidasu-api:${{ env.VERSION }} \
           "
 #      It's not recommended because docker has a layer concept. Using the layer feature can save network traffic.
 #      - name: Save Docker image as tar file
@@ -94,6 +94,8 @@ jobs:
       - name: Copy the docker compose to remote server
         run: |
           scp -rp docker-compose.yaml ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:~/omoidasu-api/docker-compose.yaml
+          scp -rp Dockerfile ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:~/omoidasu-api/Dockerfile
+          scp -rp build/libs/omoidasu-api-${{ env.VERSION }}.jar ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:~/omoidasu-api/build/libs/omoidasu-api-${{ env.VERSION }}.jar
       - name: Up the docker-compose
         run: |
           ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "\

@@ -17,7 +17,14 @@ services:
     networks:
       - app-network
   app:
+    build:
+        context: .
+        dockerfile: Dockerfile
+        args:
+            - VERSION=${VERSION}
     image: fox20431/omoidasu-api:${VERSION}
+#    environment:
+#      - VERSION=${VERSION}
     depends_on:
       - db
     ports:
