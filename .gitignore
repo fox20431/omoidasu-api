@@ -53,4 +53,5 @@ temp/
 src/main/resources/dicts
 JMdict
 docker/.env
+src/main/resources/application-prod.properties
 

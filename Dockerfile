@@ -11,4 +11,4 @@ COPY build/libs/omoidasu-api-$VERSION.jar /app/
 
 EXPOSE 8080
 
-CMD ["java", "-Dspring.datasource.url=jdbc:postgresql://db:5432/omoidasu", "-Djdk.xml.entityExpansionLimit=0", "-jar", "/app/omoidasu-api-$VERSION.jar"]
+CMD ["java",  "-Dspring.profiles.active=prod", "-Djdk.xml.entityExpansionLimit=0", "-jar", "/app/omoidasu-api-$VERSION.jar"]
