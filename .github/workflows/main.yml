@@ -60,5 +60,7 @@ jobs:
             export DB_USERNAME=${{ secrets.DB_USERNAME }}; \
             export DB_PASSWORD=${{ secrets.DB_PASSWORD }}; \
             export VERSION=${{ env.VERSION }}; \
-            docker-compose build -f ~/omoidasu-api/docker-compose.yaml"
-            docker-compose -f ~/omoidasu-api/docker-compose.yaml up -d"
+            cd ~/omoidasu-api; \
+            docker-compose build; \
+            docker-compose up -d; \
+          "
