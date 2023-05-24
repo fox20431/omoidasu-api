@@ -79,8 +79,8 @@ jobs:
           scp -i ${{ secrets.SSH_PRIVATE_KEY }} -rp docker-compose.yaml ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:~/omoidasu-api/docker-compose.yaml
       - name: Up the docker-compose
         run: |
-          export DB_USERNAME=${{ DB_USERNAME }}
-          export DB_PASSWORD=${{ DB_PASSWORD }}
+          export DB_USERNAME=${{ secrets.DB_USERNAME }}
+          export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
           export VERSION=${{ env.VERSION }}
           ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "\
             cd ~/omoidasu-api; \
