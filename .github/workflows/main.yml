@@ -30,7 +30,7 @@ jobs:
       - name: Build and Generate the Boot Jar
         run: |
           chmod +x gradlew
-          ./gradlew build
+          ./gradlew test
           ./gradlew bootJar
       - name: Cache Project Dependencies
         uses: actions/cache@v3

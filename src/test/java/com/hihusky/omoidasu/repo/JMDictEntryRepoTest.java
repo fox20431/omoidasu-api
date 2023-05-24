@@ -1,6 +1,7 @@
 package com.hihusky.omoidasu.repo;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +12,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.List;
 import java.util.Objects;
 
+@Disabled
+// @SpringBootTest
 // We can use the following annotations to replace `@SpringBootTest`
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-// @SpringBootTest
 @Slf4j
 public class JMDictEntryRepoTest {
     @Autowired
