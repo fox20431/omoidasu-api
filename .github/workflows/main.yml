@@ -59,8 +59,10 @@ jobs:
           ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "\
             export DB_USERNAME=${{ secrets.DB_USERNAME }}; \
             export DB_PASSWORD=${{ secrets.DB_PASSWORD }}; \
+            export DB_NAME=${{ secrets.DB_NAME }}; \
             export VERSION=${{ env.VERSION }}; \
             cd ~/omoidasu-api; \
             docker-compose build; \
+            docker-compose down; \
             docker-compose up -d; \
           "

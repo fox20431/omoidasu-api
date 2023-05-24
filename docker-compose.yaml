@@ -5,9 +5,9 @@ services:
     image: postgres
     restart: on-failure
     environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_DB: ${POSTGRES_DB:-omoidasu}
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-omoidasu}
     volumes:
       - db-data:/var/lib/postgresql/data
     ports:
@@ -22,9 +22,9 @@ services:
       dockerfile: Dockerfile
       args:
         - VERSION=${VERSION}
+        - DB_USERNAME=${DB_USERNAME}
+        - DB_PASSWORD=${DB_PASSWORD}
     image: fox20431/omoidasu-api:${VERSION}
-    #    environment:
-    #      - VERSION=${VERSION}
     depends_on:
       - db
     ports:
