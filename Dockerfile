@@ -20,8 +20,5 @@ EXPOSE 8080
 
 CMD ["sh", "-c", "java \
     -Dspring.profiles.active=prod \
-    -Dspring.datasource.username=$DB_USERNAME \
-    -Dspring.datasource.password=$DB_PASSWORD \
-    -Dspring.datasource.url=$DB \
-    -Djdk.xml.entityExpansionLimit=jdbc:postgresql://db:5432/$DB_NAME \
+    -Djdk.xml.entityExpansionLimit=0 \
     -jar /app/omoidasu-api-$VERSION.jar"]
