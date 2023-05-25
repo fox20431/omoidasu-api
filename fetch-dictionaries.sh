@@ -3,7 +3,7 @@
 echo "Fetch dictionaries started."
 
 url="http://ftp.edrdg.org/pub/Nihongo/JMdict.gz"
-outputPath="./src/main/resources/dicts/"
+outputPath="./"
 
 if [ -e "$outputPath/JMdict" ]; then
   echo "JMdict already exists in $outputPath"
