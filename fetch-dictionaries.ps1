@@ -1,6 +1,11 @@
 # the origin source
 $url = "http://ftp.edrdg.org/pub/Nihongo/JMdict.gz"
-$outputPath = "./src/main/resources/dicts/"
+$outputPath = "./"
+
+if (Test-Path "$outputPath/JMdict") {
+  Write-Output "JMdict already exists in $outputPath"
+  exit 1
+}
 
 if(!(Test-Path -Path $outputPath)) {
     New-Item -ItemType Directory -Path $outputPath | Out-Null

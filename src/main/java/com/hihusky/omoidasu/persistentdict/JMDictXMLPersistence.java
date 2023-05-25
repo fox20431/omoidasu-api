@@ -5,8 +5,6 @@ import com.hihusky.omoidasu.repo.DictFileHashRepository;
 import com.hihusky.omoidasu.repo.JMDictEntryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -24,23 +22,21 @@ import java.util.ArrayList;
 @Slf4j
 public class JMDictXMLPersistence {
 
-    private ResourceLoader resourceLoader;
-    private DictFileHashRepository dictFileHashRepository;
-    private JMDictEntryRepository jmDictEntryRepository;
+    private final DictFileHashRepository dictFileHashRepository;
+    private final JMDictEntryRepository jmDictEntryRepository;
 
-    private Resource jmDict;
+    private File jmDict;
     private String hash;
 
     @Autowired
     public JMDictXMLPersistence(
-            ResourceLoader resourceLoader,
             DictFileHashRepository dictFileHashRepository,
             JMDictEntryRepository jmDictEntryRepository
     ) {
-        this.resourceLoader = resourceLoader;
         this.dictFileHashRepository = dictFileHashRepository;
         this.jmDictEntryRepository = jmDictEntryRepository;
-        jmDict = resourceLoader.getResource("classpath:dicts/JMdict");
+        String jmDictFilePath = System.getProperty("user.dir") + "/JMdict";
+        jmDict = new File(jmDictFilePath);
         hash = getFileHash();
     }
 
@@ -48,7 +44,7 @@ public class JMDictXMLPersistence {
         // create the input stream
         InputStream is;
         try {
-            is = jmDict.getInputStream();
+            is = new FileInputStream(jmDict);
         } catch ( IOException e) {
             throw new RuntimeException(e);
         }
@@ -103,7 +99,7 @@ public class JMDictXMLPersistence {
             // 创建一个实现了DefaultHandler接口的类
             InputStream inputStream;
             try {
-                inputStream = jmDict.getInputStream();
+                inputStream = new FileInputStream(jmDict);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

@@ -15,6 +15,7 @@ ENV DB_NAME=$DB_NAME
 
 # Copy current all under directory into 'app' directory
 COPY build/libs/omoidasu-api-$VERSION.jar /app/omoidasu-api-$VERSION.jar
+COPY JMdict /app/JMdict
 
 EXPOSE 8080
 

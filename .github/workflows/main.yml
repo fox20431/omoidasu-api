@@ -11,17 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Fetch the Dictionary
-        run: |
-          chmod +x fetch-dictionaries.sh
-          . fetch-dictionaries.sh
-      - name: Cache Dictionary File
-        uses: actions/cache@v3
-        with:
-          path: src/main/resources/dicts
-          key: ${{ runner.os }}-dictionary-${{ hashFiles('dictionary') }}
-          restore-keys: |
-            ${{ runner.os }}-dictionary-
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
@@ -46,14 +35,25 @@ jobs:
       - name: Create workspace on remote server
         run: |
           ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "\
+          if [ ! -d "~/omoidasu-api" ]; then
             mkdir -p ~/omoidasu-api; \
-            mkdir -p ~/omoidasu-api/build/libs \
+          fi; \
+          if [ ! -d "~/omoidasu-api/build/libs" ]; then
+            mkdir -p ~/omoidasu-api/build/libs; \
+          fi; \
           "
       - name: Copy the docker compose related files to remote server
         run: |
+          scp -rp fetch-dictionaries.sh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:~/omoidasu-api/fetch-dictionaries.sh
           scp -rp docker-compose.yaml ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:~/omoidasu-api/docker-compose.yaml
           scp -rp Dockerfile ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:~/omoidasu-api/Dockerfile
           scp -rp build/libs/omoidasu-api-${{ env.VERSION }}.jar ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:~/omoidasu-api/build/libs/omoidasu-api-${{ env.VERSION }}.jar
+      - name: Fetch the Dictionary
+        run: |
+          ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "\
+            cd ~/omoidasu-api; \
+            chmod +x fetch-dictionaries.sh && . fetch-dictionaries.sh; \
+          "
       - name: Up the docker-compose
         run: |
           ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "\
