@@ -8,7 +8,6 @@ on:
 
 jobs:
   build:
-    needs: [pre]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -28,60 +27,43 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: gradle
       - name: Build and Generate the Boot Jar
         run: |
           chmod +x gradlew
-          ./gradlew build
+          ./gradlew test
           ./gradlew bootJar
-      - name: Cache Project Dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.m2/repository
-          key: ${{ runner.os }}-deps-${{ hashFiles('dictionary') }}
-          restore-keys: |
-            ${{ runner.os }}-deps-
       - name: Set version environment variable
         run: |
           echo "VERSION=$(ls build/libs/ | grep -v 'plain' | sed 's/^.\{13\}\(.*\).\{4\}$/\1/')" >> $GITHUB_ENV
-      - name: Build the Docker image
-        run: docker build --build-arg VERSION=${{ env.VERSION }} --file Dockerfile --tag fox20431/omoidasu-api:${{ env.VERSION }} .
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.docker
-          key: ${{ runner.os }}-docker-${{ hashFiles('**/Dockerfile') }}
-          restore-keys: |
-            ${{ runner.os }}-docker-
-
-  deploy:
-    needs: [build]
-    runs-on: ubuntu-latest
-    steps:
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
       - name: Create workspace on remote server
         run: |
-          ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "\
-            rm -rf ~/omoidasu-api; \
-            mkdir -p ~/omoidasu-api"
-      - name: Save Docker image as tar file
+          ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "\
+            mkdir -p ~/omoidasu-api; \
+            mkdir -p ~/omoidasu-api/build/libs \
+          "
+      - name: Copy the docker compose related files to remote server
         run: |
-          docker save fox20431/omoidasu-api:${{ env.VERSION }} > omoidasu-api-${{ env.VERSION }}-image.tar
-      - name: Copy tar file to remote server
-        run: |
-          scp -i ${{ secrets.SSH_PRIVATE_KEY }} -rp omoidasu-api-image.tar ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:~/omoidasu-api-image.tar
-      - name: Load Docker image from tar file
-        run: |
-          ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "docker load -i ~/omoidasu-api-image.tar"
-      - name: Copy the docker file to remote server
-        run: |
-          scp -i ${{ secrets.SSH_PRIVATE_KEY }} -rp docker-compose.yaml ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:~/omoidasu-api/docker-compose.yaml
+          scp -rp docker-compose.yaml ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:~/omoidasu-api/docker-compose.yaml
+          scp -rp Dockerfile ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:~/omoidasu-api/Dockerfile
+          scp -rp build/libs/omoidasu-api-${{ env.VERSION }}.jar ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:~/omoidasu-api/build/libs/omoidasu-api-${{ env.VERSION }}.jar
       - name: Up the docker-compose
         run: |
-          export DB_USERNAME=${{ DB_USERNAME }}
-          export DB_PASSWORD=${{ DB_PASSWORD }}
-          export VERSION=${{ env.VERSION }}
-          ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "\
+          ssh ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} "\
+            export DB_USERNAME=${{ secrets.DB_USERNAME }}; \
+            export DB_PASSWORD=${{ secrets.DB_PASSWORD }}; \
+            export DB_NAME=${{ secrets.DB_NAME }}; \
+            export DB_URL=${{ secrets.DB_URL }}; \
+            export VERSION=${{ env.VERSION }}; \
             cd ~/omoidasu-api; \
-            docker-compose up -d"
+            docker-compose build; \
+            docker-compose down; \
+            docker-compose up -d; \
+          "
