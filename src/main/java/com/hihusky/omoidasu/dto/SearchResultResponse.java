@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @Builder
 @ToString
-public class SearchResultDTO {
+public class SearchResultResponse {
     private Long sequence;
     private List<String> kanjiList;
     private List<String> kanaList;

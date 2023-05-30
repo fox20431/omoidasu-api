@@ -22,10 +22,14 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("org.springframework.boot:spring-boot-devtools")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
 
     implementation("org.springframework.boot:spring-boot-starter-web")
+
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.postgresql:postgresql:42.5.4")
+
+    implementation("org.springframework.boot:spring-boot-starter-security")
 
     // jaxb
     implementation("javax.xml.bind:jaxb-api:2.4.0-b180830.0359")
@@ -33,11 +37,13 @@ dependencies {
     implementation("org.glassfish.jaxb:jaxb-runtime:4.0.2")
     implementation("jakarta.inject:jakarta.inject-api:2.0.1")
 
+    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
+    implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
+
     // swagger
     // implementation("io.springfox:springfox-swagger2:3.0.0")
     // implementation("io.springfox:springfox-swagger-ui:3.0.0")
-    // javax.servlet
-    // compileOnly("javax.servlet:javax.servlet-api:4.0.1")
 
     // lombok
     compileOnly("org.projectlombok:lombok:1.18.26")
@@ -53,10 +59,3 @@ dependencies {
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
-
-// tasks.register("printVersion") {
-//     doLast {
-//         val version: String by project
-//         println("$version")
-//     }
-// }

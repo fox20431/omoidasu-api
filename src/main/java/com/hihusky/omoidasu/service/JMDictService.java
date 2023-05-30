@@ -1,8 +1,8 @@
 package com.hihusky.omoidasu.service;
 
-import com.hihusky.omoidasu.dto.SearchResultDTO;
+import com.hihusky.omoidasu.dto.SearchResultResponse;
 import com.hihusky.omoidasu.repo.JMDictEntryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -11,21 +11,21 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class JMDictService {
 
-    @Autowired
-    private JMDictEntryRepository jmDictEntryRepository;
+    final private JMDictEntryRepository jmDictEntryRepository;
 
-    public List<SearchResultDTO> search(String keyword) {
+    public List<SearchResultResponse> search(String keyword) {
         List<Object[]> resultList = jmDictEntryRepository.search(keyword);
-        Map<Long, SearchResultDTO> resultMap = new HashMap<>();
+        Map<Long, SearchResultResponse> resultMap = new HashMap<>();
         for (Object[] result : resultList) {
             Long sequence = (Long) result[0];
             String kanji = (String) result[1];
             String kana = (String) result[2];
-            SearchResultDTO searchResultDTO = resultMap.get(sequence);
+            SearchResultResponse searchResultDTO = resultMap.get(sequence);
             if (searchResultDTO == null) {
-                searchResultDTO = SearchResultDTO.builder()
+                searchResultDTO = SearchResultResponse.builder()
                         .sequence(sequence)
                         .kanjiList(new ArrayList<>() {{
                             add(kanji);

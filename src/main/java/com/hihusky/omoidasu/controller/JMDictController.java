@@ -1,27 +1,23 @@
 package com.hihusky.omoidasu.controller;
 
-import com.hihusky.omoidasu.dto.SearchResultDTO;
+import com.hihusky.omoidasu.dto.SearchResultResponse;
 import com.hihusky.omoidasu.service.JMDictService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/dicts/jmdict/")
+@RequestMapping("/api/v1/dicts/jmdict/")
 public class JMDictController {
 
-    JMDictService jmDictService;
-
-    @Autowired
-    public JMDictController(JMDictService jmDictService) {
-        this.jmDictService = jmDictService;
-    }
+    private final JMDictService jmDictService;
 
     @GetMapping("/search/{keyword}")
-    public ResponseEntity<List<SearchResultDTO>> search(@PathVariable("keyword") String keyword) {
-        List<SearchResultDTO> jmDictEntryDTOList = jmDictService.search(keyword);
+    public ResponseEntity<List<SearchResultResponse>> search(@PathVariable("keyword") String keyword) {
+        List<SearchResultResponse> jmDictEntryDTOList = jmDictService.search(keyword);
         return ResponseEntity.ok(jmDictEntryDTOList);
     }
 }
