@@ -1,9 +1,6 @@
 package com.hihusky.omoidasu.service;
 
-import com.hihusky.omoidasu.dto.AuthenticationRequest;
-import com.hihusky.omoidasu.dto.AuthenticationResponse;
-import com.hihusky.omoidasu.dto.RegisterRequest;
-import com.hihusky.omoidasu.entity.Role;
+import com.hihusky.omoidasu.dto.*;
 import com.hihusky.omoidasu.entity.User;
 import com.hihusky.omoidasu.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,12 +24,13 @@ public class AuthenticationService {
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .email(request.getEmail())
-                .role(Role.USER)
                 .build();
         userRepository.save(user);
-        var jwtToken = jwtService.generateToken(user);
+        var accessToken = jwtService.generateAccessToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
         return AuthenticationResponse.builder()
-                .token(jwtToken)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .build();
     }
 
@@ -50,9 +48,19 @@ public class AuthenticationService {
         var user = userRepository.findByUsername(request.getUsername()).orElseThrow(
                 () -> new RuntimeException("User not found")
         );
-        var jwtToken = jwtService.generateToken(user);
+        var accessToken = jwtService.generateAccessToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
         return AuthenticationResponse.builder()
-                .token(jwtToken)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
+    public RefreshTokenResponse refreshToken(RefreshTokenRequest request) {
+        User user = jwtService.getUserFromRefreshToken(request.getRefreshToken());
+        var accessToken = jwtService.generateAccessToken(user);
+        return RefreshTokenResponse.builder()
+                .accessToken(accessToken)
                 .build();
     }
 }

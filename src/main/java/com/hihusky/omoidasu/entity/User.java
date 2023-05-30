@@ -24,8 +24,12 @@ public class User implements UserDetails {
     private String password;
     private String email;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    @ElementCollection
+    @CollectionTable(
+            name = "user_authorities",
+            joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "authority")
+    private List<GrantedAuthority> authorities;
 
     @Builder.Default
     private boolean enabled = true;
@@ -35,9 +39,4 @@ public class User implements UserDetails {
     private boolean accountNonLocked = true;
     @Builder.Default
     private boolean credentialsNonExpired = true;
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
-    }
 }

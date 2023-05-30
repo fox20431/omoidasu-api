@@ -19,19 +19,19 @@ public class JMDictSense {
     private Long id;
     @ElementCollection
     @CollectionTable(
-            name = "jmdict_sense_stagk",
+            name = "jmdict_sense_stagk_list",
             joinColumns = @JoinColumn(name = "sense_id"))
     @Column(name = "stagk")
     private List<String> stagkList;
     @ElementCollection
     @CollectionTable(
-            name = "jmdict_sense_stagr",
+            name = "jmdict_sense_stagr_list",
             joinColumns = @JoinColumn(name = "sense_id"))
     @Column(name = "stagr")
     private List<String> stagrList;
     @ElementCollection
     @CollectionTable(
-            name = "jmdict_sense_pos",
+            name = "jmdict_sense_pos_list",
             joinColumns = @JoinColumn(name = "sense_id"))
     @Column(name = "pos")
     private List<String> posList;
@@ -55,13 +55,13 @@ public class JMDictSense {
     private List<String> fields;
     @ElementCollection
     @CollectionTable(
-            name = "jmdict_sense_misc",
+            name = "jmdict_sense_misc_list",
             joinColumns = @JoinColumn(name = "sense_id"))
     @Column(name = "misc")
     private List<String> miscList;
     @ElementCollection
     @CollectionTable(
-            name = "jmdict_sense_information",
+            name = "jmdict_sense_information_list",
             joinColumns = @JoinColumn(name = "sense_id"))
     @Lob
     @Column(name = "information")
