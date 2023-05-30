@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
+// todo expired strategy: access_token & refresh_token
+// todo revocation strategy: access_token & refresh_token
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
