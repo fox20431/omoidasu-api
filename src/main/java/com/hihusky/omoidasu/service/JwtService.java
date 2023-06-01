@@ -14,9 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @RequiredArgsConstructor
@@ -42,8 +40,12 @@ public class JwtService {
     }
 
     public String generateAccessToken(UserDetails userDetails) {
-        List<String> authorities = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
-        Map<String, Object> authoritiesClaims = Map.of("authorities", authorities);
+        List<String> authorities;
+        Map<String, Object> authoritiesClaims = new HashMap<>();
+        if ( userDetails.getAuthorities() != null ) {
+            authorities = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+            authoritiesClaims = Map.of("authorities", authorities);
+        }
         return Jwts
                 .builder()
                 .setSubject(userDetails.getUsername())
