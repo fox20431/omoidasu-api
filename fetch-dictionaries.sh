@@ -7,7 +7,7 @@ outputPath="./"
 
 if [ -e "$outputPath/JMdict" ]; then
   echo "JMdict already exists in $outputPath"
-  exit 1
+  exit 0
 fi
 
 if [ ! -d "$outputPath" ]; then
